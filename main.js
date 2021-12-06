@@ -1,74 +1,93 @@
 //--------------------------------------------------------------------------------------------
 // Exercice GUI2 Vue.js
-// CPNV - AMR
+// CPNV - QNS
 //--------------------------------------------------------------------------------------------
-
 
 //--------------------------------------------------------------------------------------------
 // Wrapper pour gérer la gestion des événements entre composants
 
-window.Event=new class{
-    constructor(){
-        this.vue=new Vue();
+window.Event = new class {
+    constructor() {
+        this.vue = new Vue();
     }
-    fire(event,data = null){
+    fire(event, data = null) {
         this.vue.$emit(event, data);
     }
-    listen(event, callback){
+    listen(event, callback) {
         this.vue.$on(event, callback);
     }
 };
- 
+
 //--------------------------------------------------------------------------------------------
 // Mixin contenant les fonctions utilisées par plusieurs composants
 
 var myMixin = {
     methods: {
-        icone:function(cat){            
-            switch(cat) {
+        icone: function (cat) {
+            switch (cat) {
                 case "moto":
-                    icone="fa fa-motorcycle my-darkblue";
+                    icone = "fa fa-motorcycle my-darkblue";
                     break;
                 case "van":
-                    icone="fa fa-bus my-red";
+                    icone = "fa fa-bus my-red";
                     break;
                 case "velo":
-                    icone="fa fa-bicycle my-green";
+                    icone = "fa fa-bicycle my-green";
                     break;
                 default:
-                    icone="fa fa-car my-orange";
-            }           
+                    icone = "fa fa-car my-orange";
+            }
             return icone;
         }
     }
-  }
+}
 
 //--------------------------------------------------------------------------------------------
 // Composant listevehicules. Affiche les vehicules dans une liste 'customisée'.
 
 var listeVehicules = Vue.component('liste-vehicules', {
-    template: '#listeVehicules',   
-    data: function() {
-        return {   
-            items:[]                          
+    template: '#listeVehicules',
+    data: function () {
+        return {
+            items: []
         }
     },
     mounted: function () {
-        this.fetchData();                  
-    },     
-    methods: {      
+        this.fetchData();
+    },
+    methods: {
         fetchData: function () {
-        this.items = vehicules;  
-        console.log("items from listevehicules fetchdata()"+ this.items) ;   
-        },  
-        setVehicule: function (option) {            
-            Event.fire('changeVehicule',option);            
+            this.items = vehicules;
+            //console.log("items from listevehicules fetchdata()"+ this.items) ;   
         },
-        getRightIcon:function (category) {
+        setVehicule: function (option) {
+            //Animate here
+            let tl = gsap.timeline();
+
+            tl.add(
+                gsap.to(".animdroite", {
+                    x: 500,
+                    duration: 1,
+                    opacity: 0,
+                    ease: "rough({ template: none.out, strength: 1, points: 20, taper: none, randomize: true, clamp: false})",
+                    onComplete: function () {
+                        Event.fire('changeVehicule', option);
+                        gsap.to(".animdroite", {
+                            x: 0,
+                            opacity: 1
+                        });
+                        gsap.to("#image", { x: 0, rotation: "-= 36000", opacity: 1 })
+                    }
+
+                }))
+            tl.add(gsap.to("#image", { x: 500, rotation: "+= 36000", opacity: 0 }), 0)
+            tl.play();
+        },
+        getRightIcon: function (category) {
             return this.$parent.getRightIcon(category)
         }
     }
-    });
+});
 
 //--------------------------------------------------------------------------------------------
 // Composant detailVehicule. Affiche les détails d'un vehicule avec une animation.
@@ -76,36 +95,36 @@ var listeVehicules = Vue.component('liste-vehicules', {
 var detailsVehicule = Vue.component('details-vehicule', {
     template: '#detailsVehicule',
     mixins: [myMixin],
-    data: function() {
-        return {     
-            selectedItem:[],
-                 
+    data: function () {
+        return {
+            selectedItem: [],
+
         }
     },
     mounted: function () {
-        this.fetchData();   
-        Event.listen('changeVehicule',function(n){  
-            this.changeValeurs(n);             
-        }.bind(this)) ;
+        this.fetchData();
+        Event.listen('changeVehicule', function (n) {
+            this.changeValeurs(n);
+        }.bind(this));
     },
-    methods: {      
+    methods: {
         fetchData: function () {
-            this.selectedItem = vehicules[0];                                    
-        },     
-        changeValeurs:function(n){          
-            this.selectedItem = vehicules[n];     
-            console.log("selectedItem from detailvehicules changedata()"+ this.selectedItem.titre.toString()) ;          
+            this.selectedItem = vehicules[0];
+        },
+        changeValeurs: function (n) {
+            this.selectedItem = vehicules[n];
+            //console.log("selectedItem from detailvehicules changedata()"+ this.selectedItem.titre.toString()) ;          
         },
         getRightIcon(category) {
             return this.$parent.getRightIcon(category)
         }
     }
-    });
+});
 
 //--------------------------------------------------------------------------------------------
 // Application principale Vue
 
-var app = new Vue({       
+var app = new Vue({
     el: '#app',
     methods: {
         getRightIcon(category) {
@@ -119,7 +138,11 @@ var app = new Vue({
                 case 'van':
                     return 'fa fa-bus my-red'
             }
-        }  
+        }
     }
-    });
-    
+});
+
+function setOffScreen(el) {
+    var rect = el.getBoundingClientRect();
+    return screen.width - rect.left + el.offsetWidth / 2;
+}

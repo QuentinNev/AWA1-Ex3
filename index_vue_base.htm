@@ -1,27 +1,30 @@
 <html>
-    <head>
-        <meta charset="utf-8">
-        <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css">      
-        <link rel="stylesheet" type="text/css" href="css/style.css">        
-        <title>Freeride</title>
-    </head>
-    <body>
+
+<head>
+    <meta charset="utf-8">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <title>Freeride</title>
+</head>
+
+<body>
     <header>
         <div id="title">Freeride</div> Location de vehicules a des prix abordables
     </header>
     <div id="app">
-    <div id="container"> 
+        <div id="container">
 
-        <div id="menu">
-             <liste-vehicules></liste-vehicules>        
+            <div id="menu">
+                <liste-vehicules></liste-vehicules>
+            </div>
+
+            <div id="contenu">
+                <details-vehicule></details-vehicule>
+            </div>
+
         </div>
-
-        <div id="contenu">
-            <details-vehicule></details-vehicule>  
-        </div>
-
-    </div>   
     </div>
 
     <template id="listeVehicules">
@@ -31,28 +34,31 @@
                 <i aria-hidden="true" v-if="item.cat == 'moto'" class="fa fa-motorcycle my-darkblue"></i>
                 <i aria-hidden="true" v-if="item.cat == 'velo'" class="fa fa-bicycle my-green"></i>
                 <i aria-hidden="true" v-if="item.cat == 'van'" class="fa fa-bus my-red"></i>
-            </li>               
-        </ul>   
+            </li>
+        </ul>
     </template>
 
 
-    <template id="detailsVehicule">        
+    <template id="detailsVehicule">
         <div>
-        <div class="animdroite" id="titre">{{selectedItem.titre}}</div>
-        <div class="animdroite" id="introduction">{{selectedItem.introduction}}</div>
-        <div class="animdroiteimg" id="image">
-            <img :src="selectedItem.image" height="300px">
-            <i :class="icone(selectedItem.cat)" aria-hidden="true"></i>
+            <div class="animdroite" id="titre">{{selectedItem.titre}}</div>
+            <div class="animdroite" id="introduction">{{selectedItem.introduction}}</div>
+            <div class="animdroiteimg" id="image">
+                <img :src="selectedItem.image" height="300px">
+                <i :class="icone(selectedItem.cat)" aria-hidden="true"></i>
+            </div>
+            <div class="animdroite" id="description">
+                {{selectedItem.description}}
+            </div>
+            <button class="animdroite" id="reserver">RESERVER</button>
         </div>
-        <div class="animdroite" id="description">
-            {{selectedItem.description}}
-        </div>       
-        <button  class="animdroite" id="reserver">RESERVER</button>
-        </div>       
-    </template> 
+    </template>
 
-    <script src="vue.js"></script> 
-    <script src="vehicules.js"></script>      
-    <script src="main.js"></script>        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/EaselPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js"></script>
+    <script src="vue.js"></script>
+    <script src="vehicules.js"></script>
+    <script src="main.js"></script>
 </body>
+
 </html>
